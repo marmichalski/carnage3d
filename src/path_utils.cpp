@@ -2,7 +2,11 @@
 #include "path_utils.h"
 #include <experimental/filesystem>
 
+#if OS_NAME == OS_MACOS
+namespace filesystem = std::filesystem;
+#else
 namespace filesystem = std::experimental::filesystem;
+#endif
 
 namespace cxx
 {
@@ -41,10 +45,19 @@ std::string get_executable_path()
     char buffer[PATH_MAX];
     ssize_t count = readlink("/proc/self/exe", buffer, PATH_MAX);
     return std::string(buffer, (count > 0) ? count : 0);
+#elif (OS_NAME == OS_MACOS)
+    char buffer[PATH_MAX];
+    uint32_t count = sizeof(buffer);
+    if (_NSGetExecutablePath(buffer, &count) == 0) {
+        char resolved[PATH_MAX];
+        realpath(buffer, resolved);
+
+        return std::string(resolved, count);
+    }
 #else
     debug_assert(false);
-    return std::string();
 #endif
+    return std::string();
 }
 
 bool is_absolute_path(std::string pathto)
@@ -78,7 +91,7 @@ void enum_files(std::string pathto, enum_files_proc enumproc)
         return;
 
     filesystem::directory_iterator iter_directory_end;
-    for (filesystem::directory_iterator iter_directory(sourcePath); 
+    for (filesystem::directory_iterator iter_directory(sourcePath);
         iter_directory != iter_directory_end; ++iter_directory)
     {
         const filesystem::path& currentFile = iter_directory->path();
@@ -93,7 +106,7 @@ void enum_files_recursive(std::string pathto, enum_files_proc enumproc)
         return;
 
     filesystem::recursive_directory_iterator iter_directory_end;
-    for (filesystem::recursive_directory_iterator iter_directory(sourcePath); 
+    for (filesystem::recursive_directory_iterator iter_directory(sourcePath);
         iter_directory != iter_directory_end; ++iter_directory)
     {
         const filesystem::path& currentFile = iter_directory->path();

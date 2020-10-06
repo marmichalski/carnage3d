@@ -12,6 +12,7 @@ FileSystem gFiles;
 bool FileSystem::Initialize()
 {
     mExecutablePath = cxx::get_executable_path();
+    gConsole.LogMessage(eLogMessage_Info, "Executable path: '%s'", mExecutablePath.c_str());
     mWorkingDirectoryPath = cxx::get_parent_directory(mExecutablePath);
     gConsole.LogMessage(eLogMessage_Info, "Working directory: '%s'", mWorkingDirectoryPath.c_str());
 
@@ -231,7 +232,7 @@ bool FileSystem::ScanGtaMaps()
         {
             if (cxx::get_file_extension(curr) == GTA1MapFileExtension)
             {
-                mGameMapsList.push_back(curr);  
+                mGameMapsList.push_back(curr);
             }
         });
     }

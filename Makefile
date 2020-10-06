@@ -1,4 +1,10 @@
-CPUS := $(shell nproc)
+OS := linux
+ifeq ($(shell uname -s),Darwin)
+	OS = macosx
+	CPUS = $(shell sysctl -n hw.logicalcpu)
+else
+	CPUS = $(shell nproc)
+endif
 
 all: build_debug
 	true
@@ -23,7 +29,7 @@ build_release: box2d premake
 
 get_demoversion:
 	mkdir -p gamedata/demoversions
-	cd gamedata/demoversions 
+	cd gamedata/demoversions
 	wget "https://www.rockstargames.com/gta/demos/gtaects.zip" -O gamedata/demoversions/gtaects.zip
 	unzip gamedata/demoversions/gtaects.zip -d gamedata/demoversions
 
@@ -34,22 +40,20 @@ clean:
 
 run:
 	./bin/carnage3d-debug
-	
+
 run_demoversion:
 	./bin/carnage3d-debug -mapname SANB.CMP -gtadata "gamedata/demoversions/GTAECTS/GTADATA"
 
-builddir: 
+builddir:
 	test -d .build || mkdir .build
 
 premake: builddir
 	test -e .build/premake5 || (cd .build && \
-	wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha14/premake-5.0.0-alpha14-linux.tar.gz && \
-	tar xzf premake-5.0.0-alpha14-linux.tar.gz && \
-	rm premake-5.0.0-alpha14-linux.tar.gz)
+	wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha14/premake-5.0.0-alpha14-$(OS).tar.gz && \
+	tar xzf premake-5.0.0-alpha14-$(OS).tar.gz && \
+	rm premake-5.0.0-alpha14-$(OS).tar.gz)
 
 box2d: premake
 	.build/premake5 --file=third_party/Box2D/premake5.lua gmake
 	make -C third_party/Box2D/Build config=debug_x86_64 -j$(CPUS)
 	make -C third_party/Box2D/Build config=release_x86_64 -j$(CPUS)
-
-

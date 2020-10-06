@@ -21,7 +21,7 @@ public:
 
     // Init gta gamedata files location
     bool SetupGtaDataLocation();
-    
+
     // Add search place directory
     // @param searchPlace: Path
     void AddSearchPlace(const std::string& searchPlace);
@@ -39,7 +39,7 @@ public:
 
     // Load whole binary file content to std vector
     bool ReadBinaryFile(const std::string& objectName, std::vector<unsigned char>& output);
-    
+
     // Load json config document
     bool ReadConfig(const std::string& jsonName, cxx::json_document& output);
 

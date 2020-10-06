@@ -3,12 +3,15 @@
 #define OS_WINDOWS  1
 #define OS_LINUX    2
 #define OS_UNIX     3
-#define OS_UNKNOWN  0    
+#define OS_MACOS    4
+#define OS_UNKNOWN  0
 
 #if defined(_WIN32)
     #define OS_NAME OS_WINDOWS
 #elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
     #define OS_NAME OS_LINUX
+#elif __APPLE__
+    #define OS_NAME OS_MACOS
 #else
     #define OS_NAME OS_UNKNOWN
 #endif
@@ -24,6 +27,8 @@
 
 #elif OS_NAME == OS_LINUX
     #include <assert.h>
+#elif OS_NAME == OS_MACOS
+    #include <mach-o/dyld.h>
 #endif
 
 #ifdef _DEBUG
