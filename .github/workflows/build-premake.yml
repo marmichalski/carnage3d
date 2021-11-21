@@ -1,0 +1,34 @@
+name: Build with premake
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - src/**
+      - third_party/**
+      - premake5.lua
+
+  pull_request:
+    paths:
+      - src/**
+      - third_party/**
+      - premake5.lua
+
+  workflow_dispatch:
+
+jobs:
+  build-with-premake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Update apt
+        run: sudo apt update
+
+      - name: Install dependencies
+        run: sudo apt install --yes clang cmake libglew-dev libglm-dev libopenal-dev xorg-dev
+
+      - name: Build
+        run: make

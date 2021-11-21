@@ -77,7 +77,7 @@ project "carnage3d"
 		"src/*.h", 
 		"src/*.cpp"
 	}
-	includedirs { "third_party/Box2D/include" }
+	includedirs { "third_party/Box2D/include", "hi workflow" }
 	includedirs { "GLFW" }
 	links { "GL", "GLEW", "stdc++fs", "openal", "box2d", "X11", "Xrandr", "Xinerama", "Xcursor", "pthread", "dl", "GLFW" }
 
